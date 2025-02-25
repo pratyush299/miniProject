@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depression Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+        .result h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Depression Sentiment Analysis</h1>
+        <form id="predictionForm">
+            <!-- Appetite -->
+            <div class="form-group">
+                <label for="Appetite">Appetite: Changes in appetite</label>
+                <select id="Appetite" name="Appetite" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Interest -->
+            <div class="form-group">
+                <label for="Interest">Interest: Loss of interest in activities</label>
+                <select id="Interest" name="Interest" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Fatigue -->
+            <div class="form-group">
+                <label for="Fatigue">Fatigue: Feelings of fatigue or low energy</label>
+                <select id="Fatigue" name="Fatigue" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Worthlessness -->
+            <div class="form-group">
+                <label for="Worthlessness">Worthlessness: Feelings of worthlessness or excessive guilt</label>
+                <select id="Worthlessness" name="Worthlessness" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Concentration -->
+            <div class="form-group">
+                <label for="Concentration">Concentration: Difficulty concentrating</label>
+                <select id="Concentration" name="Concentration" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Agitation -->
+            <div class="form-group">
+                <label for="Agitation">Agitation: Physical agitation</label>
+                <select id="Agitation" name="Agitation" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Suicidal Ideation -->
+            <div class="form-group">
+                <label for="Suicidal_Ideation">Suicidal Ideation: Thoughts of self-harm or suicide</label>
+                <select id="Suicidal_Ideation" name="Suicidal_Ideation" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Sleep Disturbance -->
+            <div class="form-group">
+                <label for="Sleep_Disturbance">Sleep Disturbance: Issues with sleeping</label>
+                <select id="Sleep_Disturbance" name="Sleep_Disturbance" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Aggression -->
+            <div class="form-group">
+                <label for="Aggression">Aggression: Feelings of aggression</label>
+                <select id="Aggression" name="Aggression" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Panic Attacks -->
+            <div class="form-group">
+                <label for="Panic_Attacks">Panic Attacks: Experiencing panic attacks</label>
+                <select id="Panic_Attacks" name="Panic_Attacks" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Hopelessness -->
+            <div class="form-group">
+                <label for="Hopelessness">Hopelessness: Feelings of hopelessness</label>
+                <select id="Hopelessness" name="Hopelessness" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Restlessness -->
+            <div class="form-group">
+                <label for="Restlessness">Restlessness: Feelings of restlessness</label>
+                <select id="Restlessness" name="Restlessness" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <!-- Low Energy -->
+            <div class="form-group">
+                <label for="Low_Energy">Low Energy: Lack of energy</label>
+                <select id="Low_Energy" name="Low_Energy" required>
+                    <option value="1">1: Never</option>
+                    <option value="2">2: Always</option>
+                    <option value="3">3: Often</option>
+                    <option value="4">4: Rarely</option>
+                    <option value="5">5: Sometimes</option>
+                    <option value="6">6: Not at all</option>
+                </select>
+            </div>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        <div class="result" id="result" style="display: none;">
+            <h3>Prediction Result:</h3>
+            <p><strong>Prediction:</strong> <span id="prediction"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = parseFloat(value);
+            });
+
+            // Send data to Flask backend
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Display only the prediction
+                document.getElementById('prediction').textContent = result.prediction;
+                document.getElementById('result').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
