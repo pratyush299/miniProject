@@ -5,47 +5,45 @@ import numpy as np
 # Initialize Flask app
 app = Flask(__name__)
 
-# Load the model, encoder, and feature columns
-model = joblib.load("depression_model.pkl")
-label_encoder = joblib.load("label_encoder.pkl")
-feature_columns = joblib.load("feature_columns.pkl")
+# Load trained components
+model = joblib.load("catboost_model.pkl")          # Your CatBoost model
+scaler = joblib.load("scaler.pkl")                 # Scaler used during training
+label_encoder = joblib.load("label_encoder.pkl")   # For decoding labels
+feature_columns = joblib.load("feature_columns.pkl")  # Ordered list of feature names
 
 # Serve the HTML file
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
 
-# Define the prediction route
+# Prediction endpoint
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        # Get input data
         data = request.get_json()
         
-        # Create a list of features in the same order as during training
-        features = []
-        for column in feature_columns:
-            features.append(float(data.get(column, 0)))  # Default to 0 if feature is missing
-            
-        # Reshape features for prediction
-        features = np.array(features).reshape(1, -1)
+        # Extract features in correct order
+        input_values = [float(data.get(col, 0)) for col in feature_columns]
+        input_array = np.array(input_values).reshape(1, -1)
         
-        # Make prediction
-        prediction = model.predict(features)
-        prediction_proba = model.predict_proba(features)  # Get probability scores
-        
-        # Convert prediction back to label
-        result = label_encoder.inverse_transform(prediction)[0]
-        
-        # Return the result with probability scores
+        # Apply scaling
+        scaled_input = scaler.transform(input_array)
+
+        # Predict
+        prediction = model.predict(scaled_input)[0]
+        probabilities = model.predict_proba(scaled_input)[0]
+
+        # Decode class
+        predicted_label = label_encoder.inverse_transform([int(prediction)])[0]
+
         return jsonify({
-            'prediction': result,
-            'probabilities': prediction_proba.tolist(),
-            'classes': label_encoder.classes_.tolist()
+            "prediction": predicted_label,
+            "probabilities": list(map(float, probabilities)),
+            "classes": label_encoder.classes_.tolist()
         })
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return jsonify({"error": str(e)})
 
-# Run the app
+# Run the server
 if __name__ == "__main__":
     app.run(debug=True)
